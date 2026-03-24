@@ -620,3 +620,4 @@ textarea {
     background: var(--clr-accent-dark);
     transform: translateY(-2px);
 }
+.status-dot.red { background: #ef4444; }

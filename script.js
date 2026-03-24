@@ -204,6 +204,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const text = userInput.value.trim();
         if (!text) return;
 
+        const textApiKey = localStorage.getItem('text_api_key') || CONFIG.TEXT_API_KEY;
+        const imageApiKey = localStorage.getItem('image_api_key') || CONFIG.IMAGE_API_KEY;
+
+        if (!textApiKey || !imageApiKey) {
+            addMessage('bot', "Wait! You haven't configured your API keys yet. <br><br>Please click the **Persona AI logo** in the sidebar to enter your keys, or edit `config.js` if running locally.");
+            return;
+        }
+
         // 1. Show user message
         addMessage('user', text);
         userInput.value = '';
@@ -280,6 +288,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (imageKey) localStorage.setItem('image_api_key', imageKey);
         
         settingsModal.classList.add('hidden');
+        updateApiStatus(); // Refresh the dots
         alert('API keys saved successfully!');
     });
 
@@ -295,4 +304,18 @@ document.addEventListener('DOMContentLoaded', () => {
             settingsModal.classList.add('hidden');
         }
     });
+
+    // Update status dots based on key availability
+    const updateApiStatus = () => {
+        const textStatusDot = document.querySelector('#status-text span');
+        const imageStatusDot = document.querySelector('#status-image span');
+        
+        const hasTextKey = localStorage.getItem('text_api_key') || CONFIG.TEXT_API_KEY;
+        const hasImageKey = localStorage.getItem('image_api_key') || CONFIG.IMAGE_API_KEY;
+
+        textStatusDot.className = `status-dot ${hasTextKey ? 'green' : 'red'}`;
+        imageStatusDot.className = `status-dot ${hasImageKey ? 'blue' : 'red'}`;
+    };
+
+    updateApiStatus();
 });
