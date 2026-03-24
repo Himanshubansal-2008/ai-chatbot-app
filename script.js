@@ -4,6 +4,17 @@
  */
 
 document.addEventListener('DOMContentLoaded', () => {
+    // Configure Marked with Highlight.js
+    marked.setOptions({
+        highlight: function (code, lang) {
+            const language = hljs.getLanguage(lang) ? lang : 'plaintext';
+            return hljs.highlight(code, { language }).value;
+        },
+        langPrefix: 'hljs language-',
+        breaks: true,
+        gfm: true
+    });
+
     // DOM Elements
     const chatMessages = document.getElementById('chat-messages');
     const userInput = document.getElementById('user-input');
@@ -59,10 +70,43 @@ document.addEventListener('DOMContentLoaded', () => {
         history.forEach(chat => {
             const item = document.createElement('div');
             item.className = `history-item ${chat.id === chatId ? 'active' : ''}`;
-            item.textContent = chat.title;
-            item.onclick = () => loadFromHistory(chat.id);
+            
+            item.innerHTML = `
+                <span class="history-title">${chat.title}</span>
+                <button class="delete-chat-btn" title="Delete chat">
+                    <ion-icon name="close-outline"></ion-icon>
+                </button>
+            `;
+
+            // Click to load
+            item.querySelector('.history-title').onclick = (e) => {
+                e.stopPropagation();
+                loadFromHistory(chat.id);
+            };
+
+            // Click to delete
+            item.querySelector('.delete-chat-btn').onclick = (e) => {
+                e.stopPropagation();
+                deleteFromHistory(chat.id);
+            };
+
             historyList.appendChild(item);
         });
+    };
+
+    const deleteFromHistory = (id) => {
+        if (!confirm('Delete this conversation?')) return;
+        const history = JSON.parse(localStorage.getItem('chatHistory') || '[]');
+        const updatedHistory = history.filter(h => h.id !== id);
+        localStorage.setItem('chatHistory', JSON.stringify(updatedHistory));
+        
+        if (chatId === id) {
+            chatId = Date.now();
+            chatMessages.innerHTML = '';
+            messageHistory = [];
+            addMessage('bot', "Conversation deleted.");
+        }
+        renderHistory();
     };
 
     const loadFromHistory = (id) => {
@@ -110,7 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (isImage) {
             contentHtml = `<img src="${content}" class="msg-image" alt="AI Generated Image">`;
         } else {
-            contentHtml = content.replace(/\n/g, '<br>');
+            contentHtml = marked.parse(content);
         }
 
         messageDiv.innerHTML = `
@@ -292,11 +336,7 @@ document.addEventListener('DOMContentLoaded', () => {
         alert('API keys saved successfully!');
     });
 
-    // Optional: Open settings modal on logo click
-    document.querySelector('.app-logo').addEventListener('click', () => {
-        loadSettings();
-        settingsModal.classList.remove('hidden');
-    });
+    /* Settings modal interaction removed for final privacy */
 
     // Close modal on click outside
     settingsModal.addEventListener('click', (e) => {
@@ -318,4 +358,5 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     updateApiStatus();
+    settingsModal.classList.add('hidden'); // Ensure it starts hidden
 });

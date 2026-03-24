@@ -4,18 +4,18 @@ A premium, unified AI dashboard featuring advanced text generation and text-to-i
 
 ---
 
-> [!IMPORTANT]
-> **This project was built entirely with AI.** 
+
+> *This project was built with AI.*
 
 ---
 
 ## 🚀 Features
 
-- 💬 **Smart Chat**: Powered by OpenRouter (Mistral-7B / GPT models).
+- 💬 **Smart Chat**: Powered by OpenRouter (Mistral-7B / GPT models) with **Markdown support** and **Code Highlighting**.
 - 🎨 **Image Generation**: High-quality text-to-image creation via Hugging Face.
-- 🔐 **Secure Configuration**: Supports `.env` and browser-based `localStorage` for API keys.
+- 🔐 **Secure Configuration**: Supports `.env`, `config.js` (ignored by Git), and browser-based `localStorage` for API keys.
 - ✨ **Rich Aesthetics**: Modern dark-theme UI with glassmorphism, animated backgrounds, and smooth transitions.
-- 💾 **Session History**: Automatically saves your conversations locally.
+- 💾 **Session History**: Automatically saves your conversations locally with **Individual Chat Deletion**.
 
 ## 🛠️ Setup
 
@@ -26,22 +26,31 @@ A premium, unified AI dashboard featuring advanced text generation and text-to-i
     ```
 
 2.  **Environment Variables**:
-    Copy `.env.example` to `.env` and add your API keys:
+    You can provide your keys in two ways:
+    
+    **Option A: Using `config.js` (Easiest)**
+    Edit `config.js` and add your keys:
+    ```javascript
+    TEXT_API_KEY: "sk-or-v1-...",
+    IMAGE_API_KEY: "hf_..."
+    ```
+    *(Note: `config.js` is automatically ignored by Git so your keys stay private.)*
+
+    **Option B: Using `.env`**
+    Copy `.env.example` to `.env` and add your keys:
     ```bash
     cp .env.example .env
     ```
-    - `TEXT_API_KEY`: Your OpenRouter API Key.
-    - `IMAGE_API_KEY`: Your Hugging Face Access Token (`hf_...`).
 
 3.  **Run Locally**:
     Open `index.html` in your browser (e.g., using VS Code Live Server).
 
 ## 🎛️ UI-Based Key Management
 
-Don't want to edit files? You can change your API keys directly in the UI:
-1.  **Click the "Persona AI" logo** in the sidebar.
-2.  Enter your keys in the configuration modal.
-3.  Click **Save Changes** and start chatting!
+Don't want to edit files at all? You can also save your keys directly in your browser:
+1.  Open the app and click the **"Persona AI" logo** in the sidebar.
+2.  Enter your keys and click **Save Changes**. 
+*(Note: This stores keys only in your browser's local memory.)*
 
 ---
 *Built with ❤️ via AI by Himanshu Bansal.*

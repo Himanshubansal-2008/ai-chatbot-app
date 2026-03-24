@@ -182,10 +182,37 @@ h3,
     font-size: 0.85rem;
     color: var(--clr-text);
     margin-bottom: 0.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: var(--transition);
+}
+
+.history-title {
+    flex-grow: 1;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.delete-chat-btn {
+    opacity: 0;
+    background: transparent;
+    color: var(--clr-text-muted);
+    border: none;
+    cursor: pointer;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
     transition: var(--transition);
+}
+
+.history-item:hover .delete-chat-btn {
+    opacity: 1;
+}
+
+.delete-chat-btn:hover {
+    color: #ef4444;
 }
 
 .history-item:hover {
@@ -196,6 +223,37 @@ h3,
 .history-item.active {
     background: var(--clr-accent);
     color: white;
+}
+
+/* Markdown Styles */
+.msg-bubble pre {
+    background: #1e1e1e !important;
+    padding: 1rem;
+    border-radius: 8px;
+    margin: 0.75rem 0;
+    overflow-x: auto;
+}
+
+.msg-bubble code {
+    font-family: 'Fira Code', 'Courier New', monospace;
+    font-size: 0.85rem;
+}
+
+.msg-bubble ul, .msg-bubble ol {
+    margin-left: 1.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.msg-bubble li {
+    margin-bottom: 0.25rem;
+}
+
+.msg-bubble p {
+    margin-bottom: 0.75rem;
+}
+
+.msg-bubble p:last-child {
+    margin-bottom: 0;
 }
 
 .api-status {
