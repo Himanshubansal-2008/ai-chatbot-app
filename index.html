@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Persona | Chat & Create</title>
+    <meta name="description"
+        content="A unified AI chatbot featuring advanced text generation and text-to-image capabilities.">
+    <!-- Google Fonts: Outift & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;600;700;800&display=swap"
+        rel="stylesheet">
+    <!-- Ionicons -->
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="dark-theme">
+    <div class="blob-bg" aria-hidden="true">
+        <div class="blob blob-purple"></div>
+        <div class="blob blob-blue"></div>
+    </div>
+
+    <main class="app-container">
+        <!-- Sidebar for Settings/Info -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="app-logo">
+                    <ion-icon name="sparkles"></ion-icon>
+                    <span>Persona AI</span>
+                </div>
+            </div>
+
+            <div class="sidebar-actions">
+                <button id="new-chat-btn" class="btn-primary-sidebar">
+                    <ion-icon name="add-outline"></ion-icon> New Chat
+                </button>
+            </div>
+
+            <div class="sidebar-section">
+                <h3>History</h3>
+                <div id="history-list" class="history-list">
+                    <!-- Saved chats will go here -->
+                </div>
+            </div>
+            
+            <div class="api-status">
+                <div class="status-item" id="status-text">
+                    <span class="status-dot green"></span> Text Model Ready
+                </div>
+                <div class="status-item" id="status-image">
+                    <span class="status-dot blue"></span> Image Gen Active
+                </div>
+            </div>
+
+            <div class="sidebar-footer">
+                <p class="footer-note">Powered by Hugging Face & OpenRouter</p>
+                <button id="clear-chat" class="btn-icon">
+                    <ion-icon name="trash-outline"></ion-icon> Clear History
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Chat Interface -->
+        <section class="chat-wrapper">
+            <header class="chat-header">
+                <div class="active-model">
+                    <h1 id="current-model-name">Mistral-7B Chat</h1>
+                    <p class="model-desc">Multi-purpose AI Assistant</p>
+                </div>
+                <div class="mode-toggle">
+                    <button class="mode-btn active" id="mode-text">
+                        <ion-icon name="chatbox-ellipses-outline"></ion-icon> Chat
+                    </button>
+                    <button class="mode-btn" id="mode-image">
+                        <ion-icon name="image-outline"></ion-icon> Create
+                    </button>
+                </div>
+            </header>
+
+            <div class="messages-container" id="chat-messages">
+                <!-- Welcome Message -->
+                <div class="message bot">
+                    <div class="msg-avatar">AI</div>
+                    <div class="msg-bubble">
+                        Hello! I'm your AI Workspace. I can chat with you, answer questions, or generate stunning
+                        images. What's on your mind?
+                        <div class="msg-time">Just now</div>
+                    </div>
+                </div>
+                <!-- Messages will be injected here -->
+            </div>
+
+            <div class="typing-indicator hidden" id="typing-indicator">
+                <div class="typing-bubble">
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                </div>
+            </div>
+
+            <footer class="input-area">
+                <div class="input-container">
+                    <textarea id="user-input" placeholder="Type a message or image prompt..." rows="1"></textarea>
+                    <button id="send-btn" class="send-button">
+                        <ion-icon name="send"></ion-icon>
+                    </button>
+                </div>
+                <p class="input-tip">Press Enter to send, Shift + Enter for new lines.</p>
+            </footer>
+        </section>
+    </main>
+
+    <!-- Settings Overlay (Hidden by default) -->
+    <div id="settings-modal" class="modal hidden">
+        <div class="modal-content">
+            <h2>API Configuration</h2>
+            <div class="form-group">
+                <label>Text Generation API Key</label>
+                <input type="password" id="text-key-input" placeholder="hf_... or sk-...">
+            </div>
+            <div class="form-group">
+                <label>Image Generation API Key</label>
+                <input type="password" id="image-key-input" placeholder="hf_...">
+            </div>
+            <button id="save-config" class="btn-primary">Save Changes</button>
+        </div>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
