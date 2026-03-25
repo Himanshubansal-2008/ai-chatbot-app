@@ -18,7 +18,7 @@ export default async function (req, res) {
     }
 
     try {
-        const response = await fetch("https://router.huggingface.co/hf-inference/models/stabilityai/stable-diffusion-xl-base-1.0", {
+        const response = await fetch("https://router.huggingface.co/hf-inference/models/stabilityai/stable-diffusion-2-1", {
             headers: {
                 "Authorization": `Bearer ${apiKey}`,
                 "Content-Type": "application/json",

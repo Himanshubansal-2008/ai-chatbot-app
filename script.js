@@ -40,6 +40,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const textKeyInput = document.getElementById('text-key-input');
     const imageKeyInput = document.getElementById('image-key-input');
     const saveConfigBtn = document.getElementById('save-config');
+    const appLogo = document.querySelector('.app-logo');
+
+    // Logo click listener removed as requested
 
     // Mode Toggles
     const modeTextBtn = document.getElementById('mode-text');
@@ -277,16 +280,31 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch(targetUrl, {
                 headers: headers,
                 method: "POST",
-                body: JSON.stringify({ prompt: prompt }),
+                body: JSON.stringify(useProxy ? { prompt: prompt } : { inputs: prompt }),
             });
 
-            if (!response.ok) throw new Error('Image API failed');
+            if (!response.ok) {
+                const errorText = await response.text();
+                let errorData;
+                try { errorData = JSON.parse(errorText); } catch(e) {}
+                
+                if (response.status === 401 || response.status === 403) {
+                    throw new Error("Invalid token or missing permissions. Ensure your token has 'Inference' access.");
+                } else if (response.status === 503) {
+                    throw new Error("Model is currently loading or overloaded. Try again in a minute.");
+                } else {
+                    throw new Error(errorData?.error || errorData?.message || "API error");
+                }
+            }
 
             const blob = await response.blob();
             return URL.createObjectURL(blob);
         } catch (error) {
             console.error(error);
-            return null;
+            if (error.name === 'TypeError' && error.message.includes('fetch')) {
+                return "CORS_ERROR"; // Special internal code
+            }
+            return error.message;
         }
     }
 
@@ -303,7 +321,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Only block if on localhost AND keys are missing
         if (isLocalhost && (!textApiKey || !imageApiKey)) {
-            addMessage('bot', "Wait! You haven't configured your API keys yet. <br><br>Please click the **Persona AI logo** in the sidebar to enter your keys, or edit `config.js` if running locally.");
+            addMessage('bot', "Wait! You haven't configured your API keys yet. <br><br>Please edit your `config.js` file to add your API keys for local development.");
             return;
         }
 
@@ -321,12 +339,15 @@ document.addEventListener('DOMContentLoaded', () => {
             showTyping(false);
             addMessage('bot', reply);
         } else {
-            const imageUrl = await generateImage(text);
+            const response = await generateImage(text);
             showTyping(false);
-            if (imageUrl) {
-                addMessage('bot', imageUrl, true);
+            
+            if (response && !response.includes(" ") && (response.startsWith('blob:') || response.startsWith('http'))) {
+                addMessage('bot', response, true);
+            } else if (response === "CORS_ERROR") {
+                addMessage('bot', "⚠️ **Connection Error**: I'm having trouble reaching the image generator from your local browser. <br><br>This usually means your **Hugging Face credits have run out** or your browser is blocking the request. <br>Once you deploy to Vercel, my secure proxy will handle this automatically!");
             } else {
-                addMessage('bot', "I couldn't generate that image. Make sure your Hugging Face token is valid!");
+                addMessage('bot', `I couldn't generate that image. <br><br>**Reason**: ${response || "Unknown error"}. <br>Make sure your Hugging Face token is valid and has 'Inference' permissions enabled!`);
             }
         }
     };
