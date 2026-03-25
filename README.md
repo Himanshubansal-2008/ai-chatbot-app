@@ -39,6 +39,16 @@ A premium, unified AI dashboard featuring advanced text generation and text-to-i
 3.  **Run Locally**:
     Open `index.html` in your browser (e.g., using VS Code Live Server).
 
+## 🚀 Vercel Deployment (Secure Backend)
+
+This project is optimized for Vercel using a secure **Serverless Proxy**. To ensure it works in production without exposing your keys:
+
+1.  In your **Vercel Dashboard**, go to **Settings > Environment Variables**.
+2.  Add the following **Secrets**:
+    *   `TEXT_API_KEY`: Your OpenRouter Key (`sk-or-v1-...`)
+    *   `IMAGE_API_KEY`: Your Hugging Face Token (`hf_...`)
+3.  **Save** and **Redeploy**.
+
 ## 🎛️ UI-Based Key Management
 
 Don't want to edit files at all? You can also save your keys directly in your browser:
