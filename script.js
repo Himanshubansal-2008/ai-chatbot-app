@@ -271,8 +271,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const textApiKey = localStorage.getItem('text_api_key') || CONFIG.TEXT_API_KEY;
         const imageApiKey = localStorage.getItem('image_api_key') || CONFIG.IMAGE_API_KEY;
-
-        if (!textApiKey || !imageApiKey) {
+        
+        const isLocalhost = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+        
+        // Only block if on localhost AND keys are missing
+        if (isLocalhost && (!textApiKey || !imageApiKey)) {
             addMessage('bot', "Wait! You haven't configured your API keys yet. <br><br>Please click the **Persona AI logo** in the sidebar to enter your keys, or edit `config.js` if running locally.");
             return;
         }
@@ -374,8 +377,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const hasTextKey = localStorage.getItem('text_api_key') || CONFIG.TEXT_API_KEY;
         const hasImageKey = localStorage.getItem('image_api_key') || CONFIG.IMAGE_API_KEY;
 
-        textStatusDot.className = `status-dot ${hasTextKey ? 'green' : 'red'}`;
-        imageStatusDot.className = `status-dot ${hasImageKey ? 'blue' : 'red'}`;
+        const isLocalhost = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+
+        if (!isLocalhost) {
+            textStatusDot.className = `status-dot green`;
+            imageStatusDot.className = `status-dot blue`;
+            document.querySelector('#status-text').lastChild.textContent = " Text Model Cloud Ready";
+            document.querySelector('#status-image').lastChild.textContent = " Image Gen Cloud Active";
+        } else {
+            textStatusDot.className = `status-dot ${hasTextKey ? 'green' : 'red'}`;
+            imageStatusDot.className = `status-dot ${hasImageKey ? 'blue' : 'red'}`;
+        }
     };
 
     updateApiStatus();
