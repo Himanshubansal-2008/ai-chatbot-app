@@ -23,6 +23,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const newChatBtn = document.getElementById('new-chat-btn');
     const historyList = document.getElementById('history-list');
     const typingIndicator = document.getElementById('typing-indicator');
+    
+    // Safety check for CONFIG (for Vercel deployment)
+    if (typeof CONFIG === 'undefined') {
+        window.CONFIG = {
+            TEXT_API_URL: "/api/text", // Fallback to secure API
+            IMAGE_API_URL: "/api/image", // Fallback to secure API
+            TEXT_MODEL: "openai/gpt-oss-120b",
+            TEXT_API_KEY: "", 
+            IMAGE_API_KEY: ""
+        };
+    }
 
     // Settings Modal (Logic added now)
     const settingsModal = document.getElementById('settings-modal');
@@ -190,11 +201,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const apiKey = localStorage.getItem('text_api_key') || CONFIG.TEXT_API_KEY;
 
         try {
-            const response = await fetch(CONFIG.TEXT_API_URL, {
+            // Determine the URL (use Vercel API Proxy if on Vercel)
+            const isLocalhost = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+            const targetUrl = isLocalhost && apiKey ? CONFIG.TEXT_API_URL : "/api/text";
+
+            const response = await fetch(targetUrl, {
                 headers: {
                     "Authorization": `Bearer ${apiKey}`,
                     "Content-Type": "application/json",
-                    "HTTP-Referer": window.location.origin, // Required by OpenRouter
+                    "HTTP-Referer": window.location.origin, 
                 },
                 method: "POST",
                 body: JSON.stringify({
@@ -203,7 +218,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 }),
             });
 
-            if (!response.ok) throw new Error('Text API failed');
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Text API failed');
+            }
 
             const result = await response.json();
             const reply = result.choices[0].message.content;
@@ -213,7 +231,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return reply;
         } catch (error) {
             console.error(error);
-            return "I'm having trouble connecting to my text engine. Please check your API key in config.js!";
+            return `I'm having trouble connecting to my text engine. <br><br>**Tip**: ${error.message}`;
         }
     }
 
@@ -222,19 +240,22 @@ document.addEventListener('DOMContentLoaded', () => {
         const apiKey = localStorage.getItem('image_api_key') || CONFIG.IMAGE_API_KEY;
 
         try {
-            const response = await fetch(CONFIG.IMAGE_API_URL, {
+             // Determine the URL (use Vercel API Proxy if on Vercel)
+            const isLocalhost = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+            const targetUrl = isLocalhost && apiKey ? CONFIG.IMAGE_API_URL : "/api/image";
+
+            const response = await fetch(targetUrl, {
                 headers: {
                     "Authorization": `Bearer ${apiKey}`,
                     "Content-Type": "application/json",
                 },
                 method: "POST",
-                body: JSON.stringify({ inputs: prompt }),
+                body: JSON.stringify({ prompt: prompt }),
             });
 
             if (!response.ok) throw new Error('Image API failed');
 
             const blob = await response.blob();
-            // Convert the blob into a URL that the <img> tag can use
             return URL.createObjectURL(blob);
         } catch (error) {
             console.error(error);
