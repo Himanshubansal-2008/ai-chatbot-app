@@ -201,16 +201,23 @@ document.addEventListener('DOMContentLoaded', () => {
         const apiKey = localStorage.getItem('text_api_key') || CONFIG.TEXT_API_KEY;
 
         try {
-            // Determine the URL (use Vercel API Proxy if on Vercel)
             const isLocalhost = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
-            const targetUrl = isLocalhost && apiKey ? CONFIG.TEXT_API_URL : "/api/text";
+            const useProxy = !isLocalhost || !apiKey;
+            const targetUrl = useProxy ? "/api/text" : CONFIG.TEXT_API_URL;
+
+            const headers = {
+                "Content-Type": "application/json",
+            };
+
+            // Only send Authorization if NOT using the proxy
+            if (!useProxy) {
+                headers["Authorization"] = `Bearer ${apiKey}`;
+            } else {
+                headers["HTTP-Referer"] = window.location.origin;
+            }
 
             const response = await fetch(targetUrl, {
-                headers: {
-                    "Authorization": `Bearer ${apiKey}`,
-                    "Content-Type": "application/json",
-                    "HTTP-Referer": window.location.origin, 
-                },
+                headers: headers,
                 method: "POST",
                 body: JSON.stringify({
                     model: CONFIG.TEXT_MODEL,
@@ -242,13 +249,19 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
              // Determine the URL (use Vercel API Proxy if on Vercel)
             const isLocalhost = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
-            const targetUrl = isLocalhost && apiKey ? CONFIG.IMAGE_API_URL : "/api/image";
+            const useProxy = !isLocalhost || !apiKey;
+            const targetUrl = useProxy ? "/api/image" : CONFIG.IMAGE_API_URL;
+
+            const headers = {
+                "Content-Type": "application/json",
+            };
+
+            if (!useProxy) {
+                headers["Authorization"] = `Bearer ${apiKey}`;
+            }
 
             const response = await fetch(targetUrl, {
-                headers: {
-                    "Authorization": `Bearer ${apiKey}`,
-                    "Content-Type": "application/json",
-                },
+                headers: headers,
                 method: "POST",
                 body: JSON.stringify({ prompt: prompt }),
             });
