@@ -1,0 +1,11 @@
+{
+  "name": "ai-chatbot-app",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Unified AI Dashboard with Text and Image generation",
+  "scripts": {
+    "start": "live-server"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}
