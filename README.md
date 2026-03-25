@@ -28,19 +28,13 @@ A premium, unified AI dashboard featuring advanced text generation and text-to-i
 2.  **Environment Variables**:
     You can provide your keys in two ways:
     
-    **Option A: Using `config.js` (Easiest)**
+    **Option: Using `config.js` (Easiest)**
     Edit `config.js` and add your keys:
     ```javascript
     TEXT_API_KEY: "sk-or-v1-...",
     IMAGE_API_KEY: "hf_..."
     ```
     *(Note: `config.js` is automatically ignored by Git so your keys stay private.)*
-
-    **Option B: Using `.env`**
-    Copy `.env.example` to `.env` and add your keys:
-    ```bash
-    cp .env.example .env
-    ```
 
 3.  **Run Locally**:
     Open `index.html` in your browser (e.g., using VS Code Live Server).
