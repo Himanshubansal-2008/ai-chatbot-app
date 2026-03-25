@@ -2,7 +2,7 @@
 
 A premium, unified AI dashboard featuring advanced text generation and text-to-image capabilities. 
 
-🚀 **Live Demo**: [https://ai-chatbot-app-br4w-jit742sn7-himanshus-projects-84e1edf6.vercel.app/](https://ai-chatbot-app-br4w-jit742sn7-himanshus-projects-84e1edf6.vercel.app/)
+🚀 **Live Demo**: [https://ai-chatbot-app-br4w-jit742sn7-himanshus-projects-84e1edf6.vercel.app/](https://ai-chatbot-app-sigma.vercel.app/)
 
 ---
 
