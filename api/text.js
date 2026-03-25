@@ -13,8 +13,8 @@ export default async function handler(req, res) {
     // Read key from Environment Variables (Vercel Dashboard)
     const apiKey = process.env.TEXT_API_KEY;
 
-    if (!apiKey) {
-        return res.status(500).json({ error: 'API Key not configured in Vercel. Please add TEXT_API_KEY!' });
+    if (!apiKey || apiKey.trim() === "") {
+        return res.status(500).json({ error: { message: 'TEXT_API_KEY is missing from Vercel Dashboard! Go to Settings > Environment Variables, add it, and REDEPLOY.' } });
     }
 
     try {
