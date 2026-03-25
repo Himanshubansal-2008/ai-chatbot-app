@@ -32,8 +32,9 @@ export default async function handler(req, res) {
         });
 
         const data = await response.json();
-        return res.status(200).json(data);
+        const status = response.ok ? 200 : response.status;
+        return res.status(status).json(data);
     } catch (error) {
-        return res.status(500).json({ error: 'Failed to connect to OpenRouter' });
+        return res.status(500).json({ error: { message: 'Failed to connect to OpenRouter server' } });
     }
 }

@@ -231,11 +231,18 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             const result = await response.json();
-            const reply = result.choices[0].message.content;
-
-            // Add bot reply to history
-            messageHistory.push({ role: "assistant", content: reply });
-            return reply;
+            
+            // Safety check for OpenRouter response format
+            if (result && result.choices && result.choices.length > 0) {
+                const reply = result.choices[0].message.content;
+                // Add bot reply to history
+                messageHistory.push({ role: "assistant", content: reply });
+                return reply;
+            } else if (result.error) {
+                throw new Error(result.error.message || 'API Error');
+            } else {
+                throw new Error('Malformed response from text engine.');
+            }
         } catch (error) {
             console.error(error);
             return `I'm having trouble connecting to my text engine. <br><br>**Tip**: ${error.message}`;
