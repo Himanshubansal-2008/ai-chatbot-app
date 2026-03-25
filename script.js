@@ -227,7 +227,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData.error || 'Text API failed');
+                // Extract message from OpenRouter format {error: {message: '...'}}
+                let errorMsg = 'Text API failed';
+                if (typeof errorData.error === 'object' && errorData.error.message) {
+                    errorMsg = errorData.error.message;
+                } else if (typeof errorData.error === 'string') {
+                    errorMsg = errorData.error;
+                }
+                throw new Error(errorMsg);
             }
 
             const result = await response.json();
